@@ -6,21 +6,61 @@ type Trip = {
   bookingMethod: string;
   startDate?: string;
   endDate?: string;
-  details: string;
+  summary: string;
   authorName?: string;
+};
+
+export type Place = {
+  name: string;
+  type: "restaurant" | "attraction";
+  notes?: string;
+  address?: string;
+  url?: string;
+};
+
+export const tripDetails: Record<string, { summary: string; places: Place[] }> = {
+  t1: {
+    summary:
+      "Lobster rolls, oysters, coastline scenery, and unforgettable sunrises at Acadia National Park.",
+    places: [
+      { name: "Claws", type: "restaurant", notes: "Great lobster roll, seafood salad was a good deal", address: "Rockland, Maine" },
+      { name: "Fushimi Inari Shrine", type: "attraction", notes: "Go at sunrise to avoid crowds" },
+      { name: "Arashiyama Bamboo Grove", type: "attraction" },
+      { name: "Ippudo Ramen", type: "restaurant", notes: "Classic tonkotsu" },
+    ],
+  },
+  t2: {
+    summary:
+      "Explored Alfama, LX Factory, and Sintra. Ate way too many pastéis de nata. Tram 28 was worth it early morning.",
+    places: [
+      { name: "Time Out Market", type: "restaurant", notes: "Many options under one roof" },
+      { name: "Castelo de S. Jorge", type: "attraction" },
+      { name: "Pastéis de Belém", type: "restaurant", notes: "The original nata" },
+      { name: "Pena Palace (Sintra)", type: "attraction" },
+    ],
+  },
+  t3: {
+    summary:
+      "Hikes around Lake Louise and Moraine Lake. Rented a car from Calgary. Pack layers—weather changes fast!",
+    places: [
+      { name: "Lake Louise", type: "attraction" },
+      { name: "Moraine Lake", type: "attraction" },
+      { name: "Park Distillery Restaurant", type: "restaurant" },
+      { name: "Johnston Canyon", type: "attraction" },
+    ],
+  },
 };
 
 const dummyTrips: Trip[] = [
   {
     id: "t1",
-    destination: "Kyoto, Japan",
+    destination: "Maine",
     costCents: 185000,
     currency: "USD",
-    bookingMethod: "Airbnb + Skyscanner",
+    bookingMethod: "Airbnb + Expedia",
     startDate: "2024-10-12",
     endDate: "2024-10-20",
-    details:
-      "Autumn leaves, temples, and amazing food. Stayed near Gion, booked tea ceremony and a day trip to Arashiyama.",
+    summary: tripDetails.t1.summary,
     authorName: "Alex",
   },
   {
@@ -31,8 +71,7 @@ const dummyTrips: Trip[] = [
     bookingMethod: "Booking.com + TAP",
     startDate: "2025-03-05",
     endDate: "2025-03-12",
-    details:
-      "Explored Alfama, LX Factory, and Sintra. Ate way too many pastéis de nata. Tram 28 was worth it early morning.",
+    summary: tripDetails.t2.summary,
     authorName: "Sam",
   },
   {
@@ -43,8 +82,7 @@ const dummyTrips: Trip[] = [
     bookingMethod: "Direct hotel + car rental",
     startDate: "2025-06-18",
     endDate: "2025-06-23",
-    details:
-      "Hikes around Lake Louise and Moraine Lake. Rented a car from Calgary. Pack layers—weather changes fast!",
+    summary: tripDetails.t3.summary,
     authorName: "Jess",
   },
 ];
@@ -58,11 +96,11 @@ function formatMoney(cents: number, currency: string) {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
-      <header className="border-b border-gray-200 bg-white/70 backdrop-blur">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-900 to-black text-gray-100">
+      <header className="border-b border-neutral-800 bg-neutral-900/70 backdrop-blur">
         <div className="mx-auto max-w-4xl px-6 py-6">
           <h1 className="text-2xl font-semibold tracking-tight">Trip Share</h1>
-          <p className="text-sm text-gray-600">Discover and share itineraries</p>
+          <p className="text-sm text-gray-400">Discover and share itineraries</p>
         </div>
       </header>
 
@@ -80,16 +118,13 @@ export default function Home() {
 
         <ul className="grid gap-6 sm:grid-cols-2">
           {dummyTrips.map((trip) => (
-            <li
-              key={trip.id}
-              className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-            >
+            <li key={trip.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-5 shadow-sm transition hover:shadow-md">
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold leading-6">
                     {trip.destination}
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-400">
                     {trip.startDate && trip.endDate
                       ? new Date(trip.startDate).toLocaleDateString() +
                         " – " +
@@ -97,24 +132,26 @@ export default function Home() {
                       : "Dates TBA"}
                   </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                <span className="shrink-0 rounded-full bg-neutral-800 px-3 py-1 text-xs font-medium text-gray-200">
                   {formatMoney(trip.costCents, trip.currency)}
                 </span>
               </div>
 
-              <p className="mb-3 text-sm text-gray-700 line-clamp-3">{trip.details}</p>
+              <p className="mb-3 text-sm text-gray-300 line-clamp-3">{trip.summary}</p>
 
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-xs text-gray-400">
                 <span>Booked via {trip.bookingMethod}</span>
-                <span>by {trip.authorName ?? "Anonymous"}</span>
+                <a className="text-blue-600 hover:underline" href={`/trips/${trip.id}`}>
+                  View details →
+                </a>
               </div>
             </li>
           ))}
         </ul>
       </main>
 
-      <footer className="border-t border-gray-200 bg-white/70 backdrop-blur">
-        <div className="mx-auto max-w-4xl px-6 py-6 text-center text-xs text-gray-500">
+      <footer className="border-t border-neutral-800 bg-neutral-900/70 backdrop-blur">
+        <div className="mx-auto max-w-4xl px-6 py-6 text-center text-xs text-gray-400">
           Built with Next.js + Tailwind
         </div>
       </footer>
