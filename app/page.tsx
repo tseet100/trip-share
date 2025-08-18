@@ -125,6 +125,7 @@ export const tripDetails: Record<string, { summary: string; places: Place[]; aut
 };
 
 import TripList from "@/app/components/TripList";
+import AuthButton from "@/app/components/AuthButton";
 
 type LatLng = { lat: number; lng: number };
 
@@ -199,9 +200,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-900 to-black text-gray-100">
       <header className="border-b border-neutral-800 bg-neutral-900/70 backdrop-blur">
-        <div className="mx-auto max-w-4xl px-6 py-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Trip Share</h1>
-          <p className="text-sm text-gray-400">Discover and share itineraries</p>
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-6">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Trip Share</h1>
+            <p className="text-sm text-gray-400">Discover and share itineraries</p>
+          </div>
+          <AuthButton />
         </div>
       </header>
 
