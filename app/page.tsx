@@ -51,10 +51,27 @@ export const tripDetails: Record<string, { summary: string; places: Place[] }> =
   },
 };
 
+import MapSnippet from "@/app/components/MapSnippet";
+
+type LatLng = { lat: number; lng: number };
+
+type Trip = {
+  id: string;
+  destination: string;
+  costCents: number;
+  currency: string;
+  bookingMethod: string;
+  startDate?: string;
+  endDate?: string;
+  summary: string;
+  authorName?: string;
+  points: LatLng[]; // map points (single city or multiple for road trips)
+};
+
 const dummyTrips: Trip[] = [
   {
     id: "t1",
-    destination: "Maine",
+    destination: "Maine Road Trip",
     costCents: 185000,
     currency: "USD",
     bookingMethod: "Airbnb + Expedia",
@@ -62,6 +79,11 @@ const dummyTrips: Trip[] = [
     endDate: "2024-10-20",
     summary: tripDetails.t1.summary,
     authorName: "Alex",
+    points: [
+      { lat: 43.6591, lng: -70.2568 }, // Portland, ME
+      { lat: 44.1037, lng: -69.1086 }, // Rockland, ME
+      { lat: 44.3876, lng: -68.2039 }, // Bar Harbor / Acadia
+    ],
   },
   {
     id: "t2",
@@ -73,6 +95,9 @@ const dummyTrips: Trip[] = [
     endDate: "2025-03-12",
     summary: tripDetails.t2.summary,
     authorName: "Sam",
+    points: [
+      { lat: 38.7223, lng: -9.1393 }, // Lisbon
+    ],
   },
   {
     id: "t3",
@@ -84,6 +109,9 @@ const dummyTrips: Trip[] = [
     endDate: "2025-06-23",
     summary: tripDetails.t3.summary,
     authorName: "Jess",
+    points: [
+      { lat: 51.1784, lng: -115.5708 }, // Banff
+    ],
   },
 ];
 
@@ -137,7 +165,9 @@ export default function Home() {
                 </span>
               </div>
 
-              <p className="mb-3 text-sm text-gray-300 line-clamp-3">{trip.summary}</p>
+              <div className="mb-3">
+                <MapSnippet points={trip.points} />
+              </div>
 
               <div className="flex items-center justify-between text-xs text-gray-400">
                 <span>Booked via {trip.bookingMethod}</span>
