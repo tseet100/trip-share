@@ -35,7 +35,7 @@ export default async function TripDetailPage({
             ← Back to trips
           </Link>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Trip details</h1>
-          <p className="text-sm text-gray-400">Places visited</p>
+          <p className="text-sm text-gray-400">by {trip.authorName ?? "Anonymous"}</p>
         </div>
       </header>
 

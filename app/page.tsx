@@ -9,10 +9,11 @@ export type Place = {
   images?: string[]; // image URLs
 };
 
-export const tripDetails: Record<string, { summary: string; places: Place[] }> = {
+export const tripDetails: Record<string, { summary: string; places: Place[]; authorName?: string }> = {
   t1: {
     summary:
       "Lobster rolls, oysters, coastline scenery, and unforgettable sunrises at Acadia National Park.",
+    authorName: "Alex",
     places: [
       {
         name: "Claws",
@@ -52,6 +53,7 @@ export const tripDetails: Record<string, { summary: string; places: Place[] }> =
   t2: {
     summary:
       "Explored Alfama, LX Factory, and Sintra. Ate way too many pastéis de nata. Tram 28 was worth it early morning.",
+    authorName: "Sam",
     places: [
       {
         name: "Time Out Market",
@@ -88,6 +90,7 @@ export const tripDetails: Record<string, { summary: string; places: Place[] }> =
   t3: {
     summary:
       "Hikes around Lake Louise and Moraine Lake. Rented a car from Calgary. Pack layers—weather changes fast!",
+    authorName: "Jess",
     places: [
       {
         name: "Lake Louise",
@@ -138,7 +141,7 @@ type Trip = {
   points: LatLng[]; // map points (single city or multiple for road trips)
 };
 
-const dummyTrips: Trip[] = [
+export const dummyTrips: Trip[] = [
   {
     id: "t1",
     destination: "Maine Road Trip",
