@@ -1,5 +1,6 @@
 "use client";
 
+// Import CSS inside client component; guard for SSR by relying on dynamic import in parent
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Polyline, CircleMarker, useMap } from "react-leaflet";
 
