@@ -6,6 +6,7 @@ export type Place = {
   notes?: string;
   address?: string;
   url?: string;
+  images?: string[]; // image URLs
 };
 
 export const tripDetails: Record<string, { summary: string; places: Place[] }> = {
@@ -13,30 +14,109 @@ export const tripDetails: Record<string, { summary: string; places: Place[] }> =
     summary:
       "Lobster rolls, oysters, coastline scenery, and unforgettable sunrises at Acadia National Park.",
     places: [
-      { name: "Claws", type: "restaurant", notes: "Great lobster roll, seafood salad was a good deal", address: "Rockland, Maine" },
-      { name: "Fushimi Inari Shrine", type: "attraction", notes: "Go at sunrise to avoid crowds" },
-      { name: "Arashiyama Bamboo Grove", type: "attraction" },
-      { name: "Ippudo Ramen", type: "restaurant", notes: "Classic tonkotsu" },
+      {
+        name: "Claws",
+        type: "restaurant",
+        notes: "Great lobster roll, seafood salad was a good deal",
+        address: "Rockland, Maine",
+        images: [
+          "https://media-cdn.tripadvisor.com/media/photo-s/08/9e/a8/8b/claws.jpg",
+          "https://potatorolls.com/wp-content/uploads/NE-Style-Lobster-Roll_Sweet-Dinner7.jpg",
+        ],
+      },
+      {
+        name: "Fushimi Inari Shrine",
+        type: "attraction",
+        notes: "Go at sunrise to avoid crowds",
+        images: [
+          "https://i0.wp.com/www.touristjapan.com/wp-content/uploads/2023/04/fujiyoshida-view-scaled-e1680427764989.jpg?resize=2000%2C800&ssl=1",
+        ],
+      },
+      {
+        name: "Arashiyama Bamboo Grove",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Ippudo Ramen",
+        type: "restaurant",
+        notes: "Classic tonkotsu",
+        images: [
+          "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
     ],
   },
   t2: {
     summary:
       "Explored Alfama, LX Factory, and Sintra. Ate way too many pastéis de nata. Tram 28 was worth it early morning.",
     places: [
-      { name: "Time Out Market", type: "restaurant", notes: "Many options under one roof" },
-      { name: "Castelo de S. Jorge", type: "attraction" },
-      { name: "Pastéis de Belém", type: "restaurant", notes: "The original nata" },
-      { name: "Pena Palace (Sintra)", type: "attraction" },
+      {
+        name: "Time Out Market",
+        type: "restaurant",
+        notes: "Many options under one roof",
+        images: [
+          "https://images.unsplash.com/photo-1541542684-4a5c6fd0d2f3?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Castelo de S. Jorge",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Pastéis de Belém",
+        type: "restaurant",
+        notes: "The original nata",
+        images: [
+          "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Pena Palace (Sintra)",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
     ],
   },
   t3: {
     summary:
       "Hikes around Lake Louise and Moraine Lake. Rented a car from Calgary. Pack layers—weather changes fast!",
     places: [
-      { name: "Lake Louise", type: "attraction" },
-      { name: "Moraine Lake", type: "attraction" },
-      { name: "Park Distillery Restaurant", type: "restaurant" },
-      { name: "Johnston Canyon", type: "attraction" },
+      {
+        name: "Lake Louise",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1500496733680-167c3db6931d?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Moraine Lake",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Park Distillery Restaurant",
+        type: "restaurant",
+        images: [
+          "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
+      {
+        name: "Johnston Canyon",
+        type: "attraction",
+        images: [
+          "https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=1200&auto=format&fit=crop&q=60",
+        ],
+      },
     ],
   },
 };
@@ -126,7 +206,7 @@ export default function Home() {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-medium">Latest itineraries</h2>
           <button
-            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm shadow-sm hover:bg-gray-50"
+            className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
             disabled
             title="Coming soon"
           >

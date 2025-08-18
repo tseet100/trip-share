@@ -50,13 +50,27 @@ export default async function TripDetailPage({
           <ul className="space-y-3">
             {trip.places.map((place, idx) => (
               <li key={`${place.name}-${idx}`} className="flex items-start justify-between rounded-md border border-neutral-800 bg-neutral-900 p-4">
-                <div>
+                <div className="w-full">
                   <div className="mb-1 flex items-center gap-3">
                     <h3 className="text-sm font-semibold">{place.name}</h3>
                     <Badge type={place.type} />
                   </div>
                   {place.notes && <p className="text-xs text-gray-400">{place.notes}</p>}
                   {place.address && <p className="text-xs text-gray-400">{place.address}</p>}
+                  {place.images && place.images.length > 0 && (
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      {place.images.slice(0, 6).map((src, imgIdx) => (
+                        <div key={`${place.name}-img-${imgIdx}`} className="aspect-video overflow-hidden rounded-sm border border-neutral-800">
+                          <img
+                            src={src}
+                            alt={`${place.name} photo ${imgIdx + 1}`}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   {place.url && (
                     <a href={place.url} className="text-xs text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                       Website
