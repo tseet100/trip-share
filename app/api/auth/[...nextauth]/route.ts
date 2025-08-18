@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 
 export const { GET, POST } = NextAuth({
   session: { strategy: "jwt" },
+  pages: { signIn: "/signin" },
   providers: [
     Credentials({
       credentials: {

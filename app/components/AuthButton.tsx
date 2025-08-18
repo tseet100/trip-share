@@ -57,11 +57,20 @@ export default function AuthButton() {
   }
 
   return (
-    <form action="/api/auth/signin" method="get">
-      <button className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-500">
+    <div className="flex items-center gap-2">
+      <a
+        href="/signin"
+        className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-500"
+      >
         Sign in
-      </button>
-    </form>
+      </a>
+      <a
+        href="/signup"
+        className="rounded-md border border-neutral-700 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-neutral-800"
+      >
+        Create account
+      </a>
+    </div>
   );
 }
 

@@ -11,6 +11,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
  
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  image          String?
+  hashedPassword String?
+  role           Role     @default(USER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  trips          Trip[]
+}
+
 model Trip {
   id             String   @id @default(cuid())
   createdAt      DateTime @default(now())
@@ -26,4 +43,7 @@ model Trip {
   // Basic social fields for ownership & visibility (can be extended later)
   authorName     String?
   isPublic       Boolean  @default(true)
+  // Relations
+  author         User?    @relation(fields: [authorId], references: [id])
+  authorId       String?
 }

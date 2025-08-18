@@ -1,8 +1,6 @@
 "use client";
 
-// Import CSS inside client component; guard for SSR by relying on dynamic import in parent
-import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Polyline, CircleMarker, useMap } from "react-leaflet";
+import { useEffect, useMemo, useState } from "react";
 
 type LatLng = { lat: number; lng: number };
 
@@ -13,20 +11,43 @@ function computeCenter(points: LatLng[]): LatLng {
   return { lat: avgLat, lng: avgLng };
 }
 
-function FitBounds({ points }: { points: LatLng[] }) {
-  const map = useMap();
-  if (points.length >= 2) {
-    const latLngs = points.map((p) => [p.lat, p.lng]) as [number, number][];
-    // @ts-expect-error leaflet type inference
-    map.fitBounds(latLngs, { padding: [12, 12] });
-  } else if (points.length === 1) {
-    map.setView([points[0].lat, points[0].lng], 11);
-  }
-  return null;
-}
-
 export default function MapSnippet({ points }: { points: LatLng[] }) {
-  const center = computeCenter(points);
+  const [leaflet, setLeaflet] = useState<any>(null);
+  const center = useMemo(() => computeCenter(points), [points]);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      if (typeof window === "undefined") return;
+      // Load CSS and react-leaflet on client only
+      await import("leaflet/dist/leaflet.css");
+      const mod = await import("react-leaflet");
+      if (!active) return;
+      setLeaflet(mod);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!leaflet) {
+    return <div className="h-40 overflow-hidden rounded-md border border-neutral-800" />;
+  }
+
+  const { MapContainer, TileLayer, Polyline, CircleMarker, useMap } = leaflet;
+
+  const FitBounds = ({ points: pts }: { points: LatLng[] }) => {
+    const map = useMap();
+    if (pts.length >= 2) {
+      const latLngs = pts.map((p) => [p.lat, p.lng]) as [number, number][];
+      // @ts-expect-error leaflet type inference
+      map.fitBounds(latLngs, { padding: [12, 12] });
+    } else if (pts.length === 1) {
+      map.setView([pts[0].lat, pts[0].lng], 11);
+    }
+    return null;
+  };
+
   return (
     <div className="h-40 overflow-hidden rounded-md border border-neutral-800">
       <MapContainer
@@ -38,10 +59,7 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
         attributionControl={false}
         className="h-full w-full"
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
         {points.length >= 2 && (
           <Polyline positions={points.map((p) => [p.lat, p.lng])} pathOptions={{ color: "#60a5fa", weight: 3 }} />
         )}
