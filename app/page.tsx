@@ -125,6 +125,7 @@ export const tripDetails: Record<string, { summary: string; places: Place[]; aut
 };
 
 import TripList from "@/app/components/TripList";
+import Link from "next/link";
 import AuthButton from "@/app/components/AuthButton";
 
 type LatLng = { lat: number; lng: number };
@@ -212,13 +213,13 @@ export default function Home() {
       <main className="mx-auto max-w-4xl px-6 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-medium">Latest itineraries</h2>
-          <button
+          <Link
+            href="/trips/new"
             className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-            disabled
-            title="Coming soon"
+            title="Create a new trip"
           >
             + Add your trip
-          </button>
+          </Link>
         </div>
 
         <TripList trips={dummyTrips} />
