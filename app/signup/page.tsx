@@ -1,5 +1,6 @@
 "use client";
 
+// Simple signup form posting to our signup API to create a new user
 import { useState } from "react";
 
 export default function SignUpPage() {
@@ -14,6 +15,7 @@ export default function SignUpPage() {
           method="POST"
           className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900 p-6"
           onSubmit={(e) => {
+            // Quick client-side check for required fields
             const form = e.currentTarget as HTMLFormElement;
             const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
             const password = (form.elements.namedItem("password") as HTMLInputElement)?.value;

@@ -1,10 +1,14 @@
 "use client";
 
+// Lightweight Leaflet map snippet, loaded dynamically on the client to avoid SSR issues.
+// Shows markers and an optional line between points (for road trips).
+
 import { useEffect, useMemo, useState } from "react";
 
 type LatLng = { lat: number; lng: number };
 
 function computeCenter(points: LatLng[]): LatLng {
+  // Average latitude/longitude for a simple initial center
   if (points.length === 0) return { lat: 0, lng: 0 };
   const avgLat = points.reduce((s, p) => s + p.lat, 0) / points.length;
   const avgLng = points.reduce((s, p) => s + p.lng, 0) / points.length;
@@ -16,6 +20,7 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
   const center = useMemo(() => computeCenter(points), [points]);
 
   useEffect(() => {
+    // Load leaflet resources only in the browser
     let active = true;
     (async () => {
       if (typeof window === "undefined") return;

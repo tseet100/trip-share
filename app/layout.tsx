@@ -1,3 +1,5 @@
+// Root layout for the app. Sets global fonts, dark mode, and wraps all pages.
+// Keep this component minimal; page-level headers live in individual pages.
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -25,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Render page content. Each page is responsible for its own header. */}
         {children}
       </body>
     </html>

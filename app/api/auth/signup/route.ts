@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
   try {
+    console.log("signup");
     const form = await request.formData();
     const email = String(form.get("email") || "").toLowerCase();
     const password = String(form.get("password") || "");

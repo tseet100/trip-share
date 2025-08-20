@@ -1,5 +1,8 @@
 "use client";
 
+// Renders a grid of trip cards. Each card is fully clickable and navigates to the trip detail page.
+// The author link is clickable independently and stops propagation to avoid triggering the card navigation.
+
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +12,7 @@ const MapSnippet = dynamic(() => import("@/app/components/MapSnippet"), { ssr: f
 type LatLng = { lat: number; lng: number };
 
 type Trip = {
+  // Minimal shape used by the list; provided from the page
   id: string;
   destination: string;
   costCents: number;
@@ -22,6 +26,7 @@ type Trip = {
 };
 
 function formatMoney(cents: number, currency: string) {
+  // Render amount in user's locale
   return new Intl.NumberFormat(undefined, {
     style: "currency",
     currency,
@@ -29,6 +34,7 @@ function formatMoney(cents: number, currency: string) {
 }
 
 export default function TripList({ trips }: { trips: Trip[] }) {
+  // Navigate programmatically to avoid nested anchors in the markup
   const router = useRouter();
   return (
     <ul className="grid gap-6 sm:grid-cols-2">

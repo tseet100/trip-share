@@ -1,5 +1,7 @@
 "use client";
 
+// Header auth control. Fetches current session from our custom /api/session
+// to avoid NextAuth client fetches on initial load. Shows Sign in/Sign out accordingly.
 import { useEffect, useState } from "react";
 
 export default function AuthButton() {
@@ -7,20 +9,14 @@ export default function AuthButton() {
   const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);
 
   useEffect(() => {
+    // Fetch session once on mount; keep it simple for now
     let ignore = false;
     (async () => {
       try {
-        const res = await fetch("/api/auth/session", { cache: "no-store" });
-        if (!res.ok) throw new Error("session not ok");
-        const text = await res.text();
-        let data: any = null;
-        try {
-          data = text ? JSON.parse(text) : null;
-        } catch {
-          data = null;
-        }
+        const res = await fetch("/api/session", { cache: "no-store" });
+        const data = await res.json().catch(() => null);
         if (ignore) return;
-        if (data?.user) {
+        if (res.ok && data?.user) {
           setStatus("authenticated");
           setUser(data.user);
         } else {
@@ -37,8 +33,9 @@ export default function AuthButton() {
       ignore = true;
     };
   }, []);
-
+  console.log("status", status);
   if (status === "loading") {
+    console.log("loading");
     return (
       <button className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-gray-300" disabled>
         …
@@ -47,8 +44,9 @@ export default function AuthButton() {
   }
 
   if (status === "authenticated") {
+    console.log("authenticated", user);
     return (
-      <form action="/api/auth/signout" method="post">
+      <form action="/api/auth/signout?callbackUrl=/" method="post">
         <button className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-gray-300 hover:bg-neutral-800">
           Sign out {user?.name ? `(${user.name})` : ""}
         </button>
