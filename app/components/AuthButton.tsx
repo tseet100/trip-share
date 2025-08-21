@@ -33,9 +33,8 @@ export default function AuthButton() {
       ignore = true;
     };
   }, []);
-  console.log("status", status);
+
   if (status === "loading") {
-    console.log("loading");
     return (
       <button className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-gray-300" disabled>
         …
@@ -44,7 +43,6 @@ export default function AuthButton() {
   }
 
   if (status === "authenticated") {
-    console.log("authenticated", user);
     return (
       <form action="/api/auth/signout?callbackUrl=/" method="post">
         <button className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-gray-300 hover:bg-neutral-800">

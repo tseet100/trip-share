@@ -10,7 +10,6 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  console.log("SignInPage");
   async function onSubmit(e: React.FormEvent) {
     // Prevent default submit; call NextAuth client helper
     e.preventDefault();

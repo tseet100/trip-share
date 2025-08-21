@@ -87,11 +87,7 @@ export default function TripList({ trips }: { trips: Trip[] }) {
             )}
 
             <div className="flex items-center justify-between text-xs text-gray-400">
-              <span>
-                Booked via {trip.bookingMethod}
-                {" "}•{" "}
-                by {trip.authorName ?? "Anonymous"}
-              </span>
+              <span>Booked via {trip.bookingMethod}</span>
               <span className="inline-flex items-center gap-1 text-blue-400 transition-transform group-hover:translate-x-0.5">
                 View details
                 <span aria-hidden>→</span>
