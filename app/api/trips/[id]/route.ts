@@ -3,7 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/authOptions";
 import { prisma } from "@/app/lib/prisma";
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  const me = session?.user?.email
+    ? await prisma.user.findUnique({ where: { email: session.user.email.toLowerCase() }, select: { id: true } })
+    : null;
+
   const trip = await prisma.trip.findUnique({
     where: { id: params.id },
     select: {
@@ -23,7 +28,8 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     },
   });
   if (!trip) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(trip);
+  const canEdit = !!(me?.id && trip.authorId && me.id === trip.authorId);
+  return NextResponse.json({ ...trip, canEdit });
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
