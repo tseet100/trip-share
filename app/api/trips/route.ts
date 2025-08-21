@@ -22,6 +22,7 @@ export async function POST(request: Request) {
       isPublic?: boolean;
       points?: { lat: number; lng: number }[];
       photos?: { url: string; caption?: string }[];
+      places?: { name: string; type: string; notes?: string; address?: string; url?: string }[];
     };
 
     const destination = (body.destination ?? "").trim();
@@ -58,6 +59,16 @@ export async function POST(request: Request) {
         } : undefined,
         photos: body.photos && body.photos.length > 0 ? {
           create: body.photos.map((p) => ({ url: p.url, caption: p.caption }))
+        } : undefined,
+        places: body.places && body.places.length > 0 ? {
+          create: body.places.map((pl, idx) => ({
+            name: pl.name,
+            type: (pl.type || "").toUpperCase() === "ATTRACTION" ? "ATTRACTION" : "RESTAURANT",
+            notes: pl.notes,
+            address: pl.address,
+            url: pl.url,
+            position: idx,
+          }))
         } : undefined,
       },
       select: { id: true },

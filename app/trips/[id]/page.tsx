@@ -23,6 +23,7 @@ export default async function TripDetailPage({
       createdAt: true,
       photos: { select: { url: true, caption: true, id: true } },
       authorId: true,
+      places: { select: { id: true, name: true, type: true, notes: true, address: true, url: true, position: true } },
     },
   });
 
@@ -60,6 +61,33 @@ export default async function TripDetailPage({
 
       <main className="mx-auto max-w-4xl px-6 py-10">
         <EditButton id={id} />
+        {/* Prioritize places at the top */}
+        {trip.places.length > 0 && (
+          <section className="mb-8">
+            <h2 className="mb-3 text-lg font-medium">Restaurants & attractions</h2>
+            <ul className="space-y-3">
+              {trip.places
+                .slice()
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                .map((pl) => (
+                  <li key={pl.id} className="rounded-md border border-neutral-800 bg-neutral-900 p-4">
+                    <div className="mb-1 flex items-center gap-2">
+                      <span className="text-xs uppercase tracking-wide text-gray-400">{pl.type === "ATTRACTION" ? "Attraction" : "Restaurant"}</span>
+                      <span className="text-sm font-semibold">{pl.name}</span>
+                    </div>
+                    {pl.notes && <p className="text-xs text-gray-400">{pl.notes}</p>}
+                    {pl.address && <p className="text-xs text-gray-500">{pl.address}</p>}
+                    {pl.url && (
+                      <a href={pl.url} className="text-xs text-blue-400 hover:underline" target="_blank" rel="noreferrer">
+                        Website
+                      </a>
+                    )}
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
+
         <section className="mb-6 grid gap-4 sm:grid-cols-2">
           <div className="rounded-md border border-neutral-800 bg-neutral-900 p-4 text-sm text-gray-300">
             <div className="text-xs text-gray-400">Dates</div>

@@ -59,6 +59,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       isPublic?: boolean;
       points?: { lat: number; lng: number }[];
       photos?: { url: string; caption?: string }[];
+      places?: { name: string; type: string; notes?: string; address?: string; url?: string }[];
     };
 
     const data: any = {};
@@ -90,6 +91,24 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       if (body.photos.length > 0) {
         await prisma.tripPhoto.createMany({
           data: body.photos.map((p) => ({ tripId: params.id, url: p.url, caption: p.caption })),
+        });
+      }
+    }
+
+    // Replace places if provided
+    if (Array.isArray(body.places)) {
+      await prisma.tripPlace.deleteMany({ where: { tripId: params.id } });
+      if (body.places.length > 0) {
+        await prisma.tripPlace.createMany({
+          data: body.places.map((pl, idx) => ({
+            tripId: params.id,
+            name: pl.name,
+            type: (pl.type || "").toUpperCase() === "ATTRACTION" ? "ATTRACTION" : "RESTAURANT",
+            notes: pl.notes,
+            address: pl.address,
+            url: pl.url,
+            position: idx,
+          })),
         });
       }
     }

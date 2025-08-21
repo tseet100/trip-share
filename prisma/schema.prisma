@@ -49,6 +49,7 @@ model Trip {
   authorId       String?
   points         TripPoint[]
   photos         TripPhoto[]
+  places         TripPlace[]
 }
 
 // NextAuth adapter models (compatible with JWT sessions but required for adapters and linking accounts)
@@ -102,6 +103,23 @@ model TripPhoto {
   url      String
   caption  String?
   createdAt DateTime @default(now())
+}
+
+enum PlaceType {
+  RESTAURANT
+  ATTRACTION
+}
+
+model TripPlace {
+  id       String    @id @default(cuid())
+  trip     Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  tripId   String
+  name     String
+  type     PlaceType
+  notes    String?
+  address  String?
+  url      String?
+  position Int       @default(0)
 }
 
 // (User model defined above)

@@ -16,6 +16,7 @@ export default function NewTripPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -68,6 +69,36 @@ export default function NewTripPage() {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function onAiDraft() {
+    const photos = photoUrls
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (photos.length === 0) {
+      setError("Add at least one photo URL to draft an itinerary.");
+      return;
+    }
+    setError(null);
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/ai/itinerary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photos, notes: details || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.error || "AI drafting failed");
+        return;
+      }
+      setDetails(data.summary || "");
+    } catch (e) {
+      setError("AI drafting failed. Please try again.");
+    } finally {
+      setAiLoading(false);
     }
   }
 
@@ -137,7 +168,12 @@ export default function NewTripPage() {
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-gray-400">Details</label>
+            <div className="mb-2 flex items-center justify-between">
+              <label className="text-xs text-gray-400">Details</label>
+              <button type="button" onClick={onAiDraft} disabled={aiLoading} className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-gray-200 hover:bg-neutral-800">
+                {aiLoading ? "AI drafting…" : "AI Draft from photos"}
+              </button>
+            </div>
             <textarea
               value={details}
               onChange={(e) => setDetails(e.target.value)}

@@ -59,8 +59,8 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
         center={[center.lat, center.lng]}
         zoom={11}
         scrollWheelZoom={false}
-        dragging={false}
-        doubleClickZoom={false}
+        dragging={true}
+        doubleClickZoom={true}
         attributionControl={false}
         className="h-full w-full"
         key={JSON.stringify(points)}
@@ -77,5 +77,3 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
     </div>
   );
 }
-
-

@@ -81,7 +81,13 @@ export default function TripList({ trips }: { trips: Trip[] }) {
             </div>
 
             {trip.points && trip.points.length > 0 && (
-              <div className="mb-3">
+              <div
+                className="mb-3"
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+                role="presentation"
+              >
                 <MapSnippet points={trip.points} />
               </div>
             )}
