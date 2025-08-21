@@ -11,6 +11,8 @@ export default function NewTripPage() {
   const [endDate, setEndDate] = useState("");
   const [details, setDetails] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [pointsText, setPointsText] = useState("");
+  const [photoUrls, setPhotoUrls] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,20 @@ export default function NewTripPage() {
           endDate: endDate || undefined,
           details,
           isPublic,
+          points: pointsText
+            .split("\n")
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .map((line) => {
+              const [lat, lng] = line.split(",").map((x) => Number(x.trim()));
+              return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
+            })
+            .filter(Boolean),
+          photos: photoUrls
+            .split("\n")
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .map((url) => ({ url })),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -128,6 +144,26 @@ export default function NewTripPage() {
               className="h-28 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500"
               placeholder="Describe the itinerary, highlights, and tips"
             />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs text-gray-400">Map points (lat,lng per line)</label>
+              <textarea
+                value={pointsText}
+                onChange={(e) => setPointsText(e.target.value)}
+                className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500"
+                placeholder={`43.6591, -70.2568\n44.1037, -69.1086`}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-400">Photo URLs (one per line)</label>
+              <textarea
+                value={photoUrls}
+                onChange={(e) => setPhotoUrls(e.target.value)}
+                className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500"
+                placeholder={`https://.../image1.jpg\nhttps://.../image2.jpg`}
+              />
+            </div>
           </div>
           <label className="flex items-center gap-2 text-xs text-gray-300">
             <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />

@@ -47,6 +47,8 @@ model Trip {
   // Relations
   author         User?    @relation(fields: [authorId], references: [id])
   authorId       String?
+  points         TripPoint[]
+  photos         TripPhoto[]
 }
 
 // NextAuth adapter models (compatible with JWT sessions but required for adapters and linking accounts)
@@ -82,6 +84,24 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model TripPoint {
+  id       String  @id @default(cuid())
+  trip     Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  tripId   String
+  lat      Float
+  lng      Float
+  position Int     @default(0) // order of points along the route
+}
+
+model TripPhoto {
+  id       String  @id @default(cuid())
+  trip     Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  tripId   String
+  url      String
+  caption  String?
+  createdAt DateTime @default(now())
 }
 
 // (User model defined above)

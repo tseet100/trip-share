@@ -20,6 +20,8 @@ export async function POST(request: Request) {
       endDate?: string;   // ISO date
       details?: string;
       isPublic?: boolean;
+      points?: { lat: number; lng: number }[];
+      photos?: { url: string; caption?: string }[];
     };
 
     const destination = (body.destination ?? "").trim();
@@ -51,6 +53,12 @@ export async function POST(request: Request) {
         isPublic,
         authorId: author?.id,
         authorName: session.user.name || session.user.email || "Anonymous",
+        points: body.points && body.points.length > 0 ? {
+          create: body.points.map((p, idx) => ({ lat: p.lat, lng: p.lng, position: idx }))
+        } : undefined,
+        photos: body.photos && body.photos.length > 0 ? {
+          create: body.photos.map((p) => ({ url: p.url, caption: p.caption }))
+        } : undefined,
       },
       select: { id: true },
     });

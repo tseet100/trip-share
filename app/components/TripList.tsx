@@ -22,7 +22,7 @@ type Trip = {
   endDate?: string;
   summary: string;
   authorName?: string;
-  points: LatLng[];
+  points?: LatLng[];
 };
 
 function formatMoney(cents: number, currency: string) {
@@ -80,9 +80,11 @@ export default function TripList({ trips }: { trips: Trip[] }) {
               </span>
             </div>
 
-            <div className="mb-3">
-              <MapSnippet points={trip.points} />
-            </div>
+            {trip.points && trip.points.length > 0 && (
+              <div className="mb-3">
+                <MapSnippet points={trip.points} />
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-xs text-gray-400">
               <span>

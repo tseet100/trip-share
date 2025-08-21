@@ -36,7 +36,7 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
   }, []);
 
   if (!leaflet) {
-    return <div className="h-40 overflow-hidden rounded-md border border-neutral-800" />;
+    return <div className="overflow-hidden rounded-md border border-neutral-800" style={{ height: 160 }} />;
   }
 
   const { MapContainer, TileLayer, Polyline, CircleMarker, useMap } = leaflet;
@@ -54,7 +54,7 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
   };
 
   return (
-    <div className="h-40 overflow-hidden rounded-md border border-neutral-800">
+    <div className="overflow-hidden rounded-md border border-neutral-800" style={{ height: 160 }}>
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={11}
@@ -63,6 +63,7 @@ export default function MapSnippet({ points }: { points: LatLng[] }) {
         doubleClickZoom={false}
         attributionControl={false}
         className="h-full w-full"
+        key={JSON.stringify(points)}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
         {points.length >= 2 && (
