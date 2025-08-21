@@ -57,6 +57,9 @@ export default async function TripDetailPage({
       </header>
 
       <main className="mx-auto max-w-4xl px-6 py-10">
+        <div className="mb-4 text-right">
+          <a href={`/trips/${id}/edit`} className="text-xs text-blue-400 hover:underline">Edit trip</a>
+        </div>
         <section className="mb-6 grid gap-4 sm:grid-cols-2">
           <div className="rounded-md border border-neutral-800 bg-neutral-900 p-4 text-sm text-gray-300">
             <div className="text-xs text-gray-400">Dates</div>
