@@ -36,7 +36,9 @@ export default function EditTripPage() {
   const [isPublic, setIsPublic] = useState(true);
   const [pointsText, setPointsText] = useState("");
   const [photoUrls, setPhotoUrls] = useState("");
-  const [placesText, setPlacesText] = useState("");
+  const [restaurantsText, setRestaurantsText] = useState("");
+  const [attractionsText, setAttractionsText] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -59,10 +61,19 @@ export default function EditTripPage() {
           .map((p) => `${p.lat}, ${p.lng}`)
           .join("\n"));
         setPhotoUrls((data.photos || []).map((p) => p.url).join("\n"));
-        setPlacesText((data.places || [])
-          .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-          .map((pl) => `${pl.name}|${pl.type}|${pl.notes || ""}|${pl.address || ""}|${pl.url || ""}`)
-          .join("\n"));
+        const sorted = (data.places || []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+        setRestaurantsText(
+          sorted
+            .filter((pl) => (pl.type || "").toUpperCase() === "RESTAURANT")
+            .map((pl) => `${pl.name}|${pl.notes || ""}|${pl.address || ""}|${pl.url || ""}`)
+            .join("\n"),
+        );
+        setAttractionsText(
+          sorted
+            .filter((pl) => (pl.type || "").toUpperCase() === "ATTRACTION")
+            .map((pl) => `${pl.name}|${pl.notes || ""}|${pl.address || ""}|${pl.url || ""}`)
+            .join("\n"),
+        );
       } catch (e: any) {
         setError(e?.message || "Failed to load");
       } finally {
@@ -104,15 +115,26 @@ export default function EditTripPage() {
             .map((s) => s.trim())
             .filter(Boolean)
             .map((url) => ({ url })),
-          places: placesText
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean)
-            .map((line) => {
-              const [name, type, notes, address, url] = line.split("|").map((x) => (x ?? "").trim());
-              return name ? { name, type, notes, address, url } : null;
-            })
-            .filter(Boolean),
+          places: [
+            ...restaurantsText
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+              .map((line) => {
+                const [name, notes, address, url] = line.split("|").map((x) => (x ?? "").trim());
+                return name ? { name, type: "RESTAURANT", notes, address, url } : null;
+              })
+              .filter(Boolean),
+            ...attractionsText
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+              .map((line) => {
+                const [name, notes, address, url] = line.split("|").map((x) => (x ?? "").trim());
+                return name ? { name, type: "ATTRACTION", notes, address, url } : null;
+              })
+              .filter(Boolean),
+          ],
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -123,6 +145,27 @@ export default function EditTripPage() {
       router.push(`/trips/${id}`);
     } catch (e: any) {
       setError(e?.message || "Failed to update trip");
+    }
+  }
+
+  async function onUpload(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      Array.from(files).forEach((f) => form.append("files", f));
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.error || "Upload failed");
+        return;
+      }
+      const urls = (data.urls || []) as string[];
+      setPhotoUrls((prev) => (prev ? prev + "\n" : "") + urls.join("\n"));
+    } catch (e) {
+      setError("Upload failed");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -174,11 +217,21 @@ export default function EditTripPage() {
             <div>
               <label className="mb-1 block text-xs text-gray-400">Photo URLs (one per line)</label>
               <textarea value={photoUrls} onChange={(e) => setPhotoUrls(e.target.value)} className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500" />
+              <div className="mt-2 text-xs text-gray-400">
+                <input type="file" multiple accept="image/*" onChange={(e) => onUpload(e.currentTarget.files)} />
+                {uploading && <span className="ml-2">Uploading…</span>}
+              </div>
             </div>
           </div>
-          <div>
-            <label className="mb-1 block text-xs text-gray-400">Places (one per line: name|type|notes|address|url)</label>
-            <textarea value={placesText} onChange={(e) => setPlacesText(e.target.value)} className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500" placeholder={`Claws|RESTAURANT|Great lobster roll|Rockland, ME|https://...`}/>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs text-gray-400">Restaurants (one per line: name|notes|address|url)</label>
+              <textarea value={restaurantsText} onChange={(e) => setRestaurantsText(e.target.value)} className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500" placeholder={`Claws|Great lobster roll|Rockland, ME|https://...`}/>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-400">Attractions (one per line: name|notes|address|url)</label>
+              <textarea value={attractionsText} onChange={(e) => setAttractionsText(e.target.value)} className="h-24 w-full resize-y rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500" placeholder={`Fushimi Inari Shrine|Go at sunrise|Kyoto, JP|https://...`}/>
+            </div>
           </div>
           <label className="flex items-center gap-2 text-xs text-gray-300">
             <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />

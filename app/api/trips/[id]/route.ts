@@ -25,6 +25,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       authorName: true,
       points: { select: { lat: true, lng: true, position: true } },
       photos: { select: { id: true, url: true, caption: true } },
+      places: { select: { id: true, name: true, type: true, notes: true, address: true, url: true, position: true } },
     },
   });
   if (!trip) return NextResponse.json({ error: "Not found" }, { status: 404 });
